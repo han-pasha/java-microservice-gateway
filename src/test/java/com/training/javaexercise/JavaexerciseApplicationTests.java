@@ -16,29 +16,29 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RequiredArgsConstructor
 class JavaexerciseApplicationTests {
 
-	private final NewsRepository newsRepository; // Dont know but, final is necessery here
-
-	@BeforeAll
-	public void populate() {
-		this.newsRepository.save(new News(null,
-				"Clean allCode",
-				"All About Code",
-				"me?"));
-	}
-
-	@BeforeEach
-	public void populateDb() {
-		newsRepository.save(new News(null,
-				"Clean Code",
-				"All About Code",
-				"me?"));
-	}
-
-	@Test
-	public void testFindNews() {
-//		News news = newsRepository.findNewsById(0L);
-//		Assertions.assertEquals(news.getTitle(), "Clean Code");
-		System.out.println("This seems good");
-	}
+//	private final NewsRepository newsRepository; // Dont know but, final is necessery here
+//
+//	@BeforeAll
+//	public void populate() {
+//		this.newsRepository.save(new News(null,
+//				"Clean allCode",
+//				"All About Code",
+//				"me?"));
+//	}
+//
+//	@BeforeEach
+//	public void populateDb() {
+//		newsRepository.save(new News(null,
+//				"Clean Code",
+//				"All About Code",
+//				"me?"));
+//	}
+//
+//	@Test
+//	public void testFindNews() {
+////		News news = newsRepository.findNewsById(0L);
+////		Assertions.assertEquals(news.getTitle(), "Clean Code");
+//		System.out.println("This seems good");
+//	}
 
 }
