@@ -1,16 +1,24 @@
 package com.training.javaexercise.Model;
 
 import lombok.*;
-import org.springframework.beans.factory.annotation.Value;
-import javax.persistence.*;
 
-// this will mark this class as entity
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.GenerationType;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Column;
+import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
+import javax.persistence.CascadeType;
+import javax.persistence.JoinColumn;
+
+
 @Entity
-// this will map entity to actual table with name "demo_news"
 @Table(name = "demo_news")
-// this annotation will auto generate getter and setter also equals and hashcode
-@Getter
-@Setter
+@Getter // USING GETTER AND SETTER BECAUSE @Data is causing toString error in the test.
+@Setter //
 @AllArgsConstructor
 @NoArgsConstructor
 public class News {
