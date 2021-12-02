@@ -1,5 +1,9 @@
 package com.training.javaexercise.Controller;
 
+import com.training.javaexercise.Model.News;
+import com.training.javaexercise.Service.NewsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -8,10 +12,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/")
 public class GreetingController {
 
-    //@RequestMapping(value = "welcome", method = RequestMethod.GET)
+    @Autowired
+    private NewsService newsService;
+
     @GetMapping("welcome")
     public String greetWelcome() {
         return "welcome"; // This is from jsp
+    }
+
+    @GetMapping("greetings")
+    public ResponseEntity<String> greetings() {
+        return ResponseEntity.ok().body("Hello World!");
     }
 
     @GetMapping("welcome/{name}")
@@ -27,5 +38,10 @@ public class GreetingController {
         model.addAttribute("urlName", name);
         model.addAttribute("paramUser", user);
         return "welcome";
+    }
+
+    @PostMapping("post/news")
+    public ResponseEntity<News> postNews(@RequestBody News news) {
+        return ResponseEntity.ok().body(newsService.createNews(news));
     }
 }

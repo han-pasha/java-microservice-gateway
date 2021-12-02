@@ -1,13 +1,7 @@
 package com.training.javaexercise;
 
-import com.training.javaexercise.Model.Author;
-import com.training.javaexercise.Model.Awards;
-import com.training.javaexercise.Model.Content;
-import com.training.javaexercise.Model.News;
-import com.training.javaexercise.Repository.AuthorRepository;
-import com.training.javaexercise.Repository.AwardsRepository;
-import com.training.javaexercise.Repository.ContentRepository;
-import com.training.javaexercise.Repository.NewsRepository;
+import com.training.javaexercise.Model.*;
+import com.training.javaexercise.Repository.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -18,6 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -36,9 +32,41 @@ public class JpaPopulate_Test {
     private NewsRepository newsRepository;
     @Autowired
     private ContentRepository contentRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
+
 
     @BeforeAll
     public void populate() {
+        this.roleRepository.save(new Role(
+                0L,
+                "USER",
+                "USER"
+        ));
+
+        this.roleRepository.save(new Role(
+                1L,
+                "ADMIN",
+                "ADMIN"
+        ));
+
+        Role role = roleRepository.findByRoleCode("USER");
+        this.userRepository.save(new User(
+                null,
+                "han",
+                "han123",
+                new HashSet<>()
+        ));
+
+        this.userRepository.save(new User(
+                null,
+                "budi",
+                "budi123",
+                new HashSet<>()
+        ));
+
         // POPULATE AUTHOR
         this.authorRepository.save(new Author(
                 null,
@@ -95,6 +123,7 @@ public class JpaPopulate_Test {
         Content content2 = contentRepository.findByContentName("Content 2");
         Author author1 = authorRepository.findByAuthorName("AuthorName1");
         Author author2 = authorRepository.findByAuthorName("AuthorName2");
+
 
         this.newsRepository.save(new News(
                 null,
