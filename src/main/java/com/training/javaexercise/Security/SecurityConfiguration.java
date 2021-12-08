@@ -22,7 +22,7 @@ public class SecurityConfiguration {
     public PasswordEncoder passwordEncoder;
 
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) {
+    protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception{
         auth.authenticationProvider(userAuthenticationProvider);
     }
 
@@ -36,10 +36,8 @@ public class SecurityConfiguration {
         protected void configure(HttpSecurity http) throws Exception {
             http
                     .authorizeRequests()
-                    .antMatchers("/css/**", "/js/**","/**").permitAll()
-                    .antMatchers("/news/**").hasRole("USER")
-                    .and()
-                    .httpBasic();
+                    .antMatchers("/css/**", "/js/**").permitAll()
+                    .antMatchers("/welcome/**","/welcome").hasAuthority("USER");
         }
     }
 

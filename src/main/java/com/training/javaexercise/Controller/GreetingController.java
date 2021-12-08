@@ -1,6 +1,7 @@
 package com.training.javaexercise.Controller;
 
 import com.training.javaexercise.Model.News;
+import com.training.javaexercise.Model.Television;
 import com.training.javaexercise.Service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,11 @@ public class GreetingController {
         model.addAttribute("urlName", name);
         model.addAttribute("paramUser", user);
         return "welcome";
+    }
+
+    @GetMapping("microservice/testing/{id}")
+    public ResponseEntity<Television> getTelevision(@PathVariable Long id) {
+        return ResponseEntity.ok().body(newsService.getTvInfo(id));
     }
 
     @PostMapping("post/news")

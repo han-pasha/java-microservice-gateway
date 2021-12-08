@@ -1,6 +1,9 @@
 package com.training.javaexercise.Service.Implementation;
 
+import com.training.javaexercise.Model.Broadcast;
+import com.training.javaexercise.Model.Channel;
 import com.training.javaexercise.Model.News;
+import com.training.javaexercise.Model.Television;
 import com.training.javaexercise.Repository.NewsRepository;
 import com.training.javaexercise.Service.NewsService;
 import lombok.Builder;
@@ -10,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +23,9 @@ import java.util.List;
 //@Builder
 public class NewsServiceImp implements NewsService {
 
-    @Autowired
     private final NewsRepository newsRepository;
+    private final RestTemplate restTemplate;
+
     private Pageable tenNewsPerPage = PageRequest.of(0,10); //NAME COULD BE WRONG
 
     @Override
@@ -43,5 +48,17 @@ public class NewsServiceImp implements NewsService {
     @Override
     public News getNewsByTitle(String newsTitle) {
         return newsRepository.findByNewsTitle(newsTitle);
+    }
+
+    // THIS METHOD ALREADY DOING SO MUCH BY FIRST FETCHING THE DATA AND THEN COMBINE THEM
+    // THIS IS VIOLATING THE SINGLE ROLE METHOD RULES
+    // NEED TO BE CHANGED
+    @Override
+    public Television getTvInfo(Long id) {
+        Broadcast broadcast = restTemplate.getForObject("http://FirstClient/api/broadcast/get/"+id,Broadcast.class);
+        Channel channel = restTemplate.getForObject("http://SecondClient/api/channel/hello", Channel.class);
+        News news = newsRepository.findNewsByNewsId(id);
+        Television tv = new Television(news.getNewsTitle(),broadcast.getBroadcastCode(),channel.getName());
+        return tv;
     }
 }

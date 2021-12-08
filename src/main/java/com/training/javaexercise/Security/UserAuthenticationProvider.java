@@ -33,6 +33,7 @@ public class UserAuthenticationProvider extends AbstractUserDetailsAuthenticatio
 
     @Override
     protected UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
-        return null;
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        return userDetails;
     }
 }

@@ -44,12 +44,14 @@ public class JpaPopulate_Test {
                 0L,
                 "USER",
                 "USER"
+//                new HashSet<>()
         ));
 
         this.roleRepository.save(new Role(
                 1L,
                 "ADMIN",
                 "ADMIN"
+//                new HashSet<>()
         ));
 
         Role role = roleRepository.findByRoleCode("USER");

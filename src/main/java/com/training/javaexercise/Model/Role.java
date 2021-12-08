@@ -1,5 +1,6 @@
 package com.training.javaexercise.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import java.util.Set;
 
 @Entity
 @Table
@@ -30,6 +32,7 @@ public class Role {
 
     // OPTIONAL
 //    @ManyToMany
+//    @JsonIgnore
 //    private Set<User> roleUser;
 
 }
