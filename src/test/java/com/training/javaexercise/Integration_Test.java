@@ -1,19 +1,27 @@
 package com.training.javaexercise;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.training.javaexercise.Controller.GreetingController;
+import com.training.javaexercise.Controller.TelevisionController;
 import com.training.javaexercise.Model.Content;
 import com.training.javaexercise.Model.News;
+import com.training.javaexercise.Service.NewsService;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockServletContext;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import javax.servlet.ServletContext;
@@ -24,12 +32,13 @@ import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @SpringBootTest
 @AutoConfigureMockMvc
+//@RunWith(SpringRunner.class)
+//@WebMvcTest(controllers = TelevisionController.class)
 public class Integration_Test {
 
     @Autowired
@@ -39,13 +48,12 @@ public class Integration_Test {
     // Which is dumb because it is already a bean because
     // of the @Controller annotation, yet it still throws error
     @Autowired
-    private GreetingController greetingController;
+    private TelevisionController televisionController;
     @Autowired //THIS IS BEAN
     private MockMvc mockMvc;
 
     @BeforeAll
     static void initializeOnce() {
-
     }
 
     @BeforeEach
@@ -58,14 +66,14 @@ public class Integration_Test {
         ServletContext servletContext = webApplicationContext.getServletContext();
         Assertions.assertNotNull(servletContext);
         Assertions.assertTrue(servletContext instanceof MockServletContext);
-        Assertions.assertNotNull(webApplicationContext.getBean("greetingController"));
+        Assertions.assertNotNull(webApplicationContext.getBean("televisionController"));
     }
 
     @Test
     public void testLoadJspWelcomePage() throws Exception {
-        this.mockMvc.perform(get("/welcome"))
+        this.mockMvc.perform(get("/api/mvc/welcome"))
                 .andDo(print())
-                .andExpect(view().name("welcome"));
+                .andExpect(MockMvcResultMatchers.view().name("welcome"));
     }
 
     @Test
@@ -80,20 +88,22 @@ public class Integration_Test {
         News news = new News(
                 null,
                 "Berita Hari ini",
-                contentDummy,
+                null,
                 null);
 
-        this.mockMvc.perform(post("/post/news"))
+        mockMvc.perform(post("/api/mvc/crud/news/post")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(asJsonString(news))
+            .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(content().json(asJsonString(news)))
+                .andExpect(jsonPath("$.newsTitle").exists())
                 .andReturn();
     }
 
     @Test
     public void testVerifyResponseFromController() throws Exception {
-        MvcResult mvcResult = this.mockMvc.perform(get("/greetings"))
+        MvcResult mvcResult = this.mockMvc.perform(get("/api/mvc/greetings"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Hello World!")))

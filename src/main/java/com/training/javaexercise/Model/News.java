@@ -40,6 +40,7 @@ public class News {
     @JoinColumn(name = "author_authorId")
     private Author newsAuthor;
 
+
     /* DOCS
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO,generator = "NEWS_SEQUENCE")

@@ -1,10 +1,7 @@
 package com.training.javaexercise.Model;
 
 import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -40,5 +37,4 @@ public class User {
                     name = "role_roleId",
                     referencedColumnName = "roleId") )
     private Set<Role> roles;
-
 }
