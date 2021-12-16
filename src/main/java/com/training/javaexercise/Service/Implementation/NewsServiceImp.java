@@ -1,6 +1,7 @@
 package com.training.javaexercise.Service.Implementation;
 
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
 import com.training.javaexercise.Model.Broadcast;
 import com.training.javaexercise.Model.Channel;
 import com.training.javaexercise.Model.News;
@@ -9,20 +10,25 @@ import com.training.javaexercise.Repository.NewsRepository;
 import com.training.javaexercise.Service.NewsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = "television")
 //@Builder
 public class NewsServiceImp implements NewsService {
 
+    HazelcastInstance hazelcastInstance = Hazelcast.newHazelcastInstance();
+    Map<String, News> televisions = hazelcastInstance.getMap("televisions");
     private final NewsRepository newsRepository;
     @Autowired
     private BroadcastInfoImpl broadcastInfo;
@@ -32,6 +38,7 @@ public class NewsServiceImp implements NewsService {
     private final Pageable tenNewsPerPage = PageRequest.of(0,10); //NAME COULD BE WRONG
 
     @Override
+//    @Cacheable
     public List<News> getAllNews(Pageable pageable) {
         Page<News> pageNews = newsRepository.findAll(tenNewsPerPage);
         List<News> newsToReturn = pageNews.getContent();
@@ -44,8 +51,15 @@ public class NewsServiceImp implements NewsService {
     }
 
     @Override
+    @Cacheable()
     public News getNewsById(Long id) {
-        return newsRepository.findNewsByNewsId(id);
+        if(televisions.containsKey(id.toString())) {
+            return televisions.get(id.toString());
+        } else {
+            News news = newsRepository.findNewsByNewsId(id);
+            televisions.put(id.toString(), news);
+            return news;
+        }
     }
 
     @Override

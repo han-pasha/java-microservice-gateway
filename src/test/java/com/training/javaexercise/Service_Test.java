@@ -24,7 +24,6 @@ import java.util.ArrayList;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ContextConfiguration()
-//@RequiredArgsConstructor
 public class Service_Test {
 
     @Autowired
@@ -40,7 +39,6 @@ public class Service_Test {
     @Test
     public void testCorrectImplementation() {
         Assertions.assertSame(NewsServiceImp.class, newsService);
-//        Assertions.assertEquals(AuthorServiceImpl.class, authorService);
     }
 
     @Test

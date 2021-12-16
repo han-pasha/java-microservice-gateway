@@ -1,0 +1,6 @@
+hazelcast:
+  cluster-name: television-cluster
+  network:
+    join:
+      multicast:
+        enabled: true

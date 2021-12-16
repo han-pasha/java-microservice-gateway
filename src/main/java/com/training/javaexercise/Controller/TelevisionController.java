@@ -36,7 +36,6 @@ public class TelevisionController {
 
     @RequestMapping(value = "login", method = RequestMethod.GET)
     public String login(Model model) {
-
         return "/user/login";
     }
 

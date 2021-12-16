@@ -41,7 +41,7 @@ public class SecurityConfiguration {
                 .antMatchers("/welcome/**","/welcome").hasAuthority("USER")
                 .and()
                 .formLogin()
-                    .loginPage("/login")
+                    .loginPage("/MainClient/login")
                     .permitAll()
                 .and()
                 .logout()

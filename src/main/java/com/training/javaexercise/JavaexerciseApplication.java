@@ -10,9 +10,13 @@ import com.training.javaexercise.Service.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboard;
+import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
+import org.springframework.cloud.netflix.zuul.filters.discovery.PatternServiceRouteMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,13 +24,28 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+/**
+ * @author Han Pasha
+ */
 @SpringBootApplication
-@EnableEurekaClient
+//@EnableEurekaClient
 @EnableCircuitBreaker
+@EnableHystrixDashboard
+@EnableZuulProxy
+@EnableDiscoveryClient
+@EnableCaching
 public class JavaexerciseApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(JavaexerciseApplication.class, args);
+	}
+
+	/**
+	 * this is needed for Zuul to be working and not making a goddamn loop.
+	 */
+	@Bean
+	public PatternServiceRouteMapper serviceRouteMapper() {
+		return new PatternServiceRouteMapper("(?<name>^.+)-(?<version>v.+$)", "${version}/${name}");
 	}
 
 	@Bean
