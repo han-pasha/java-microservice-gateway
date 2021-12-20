@@ -13,6 +13,10 @@ import javax.persistence.OneToOne;
 import javax.persistence.ManyToOne;
 import javax.persistence.CascadeType;
 import javax.persistence.JoinColumn;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 
 @Entity
@@ -21,7 +25,7 @@ import javax.persistence.JoinColumn;
 @Setter //
 @AllArgsConstructor
 @NoArgsConstructor
-public class News {
+public class News implements Externalizable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO,generator = "NEWS_SEQUENCE")
@@ -39,6 +43,22 @@ public class News {
     )
     @JoinColumn(name = "author_authorId")
     private Author newsAuthor;
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeLong(newsId);
+        out.writeUTF(newsTitle);
+        out.writeObject(newsContent);
+        out.writeObject(newsAuthor);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        this.newsId = in.readLong();
+        this.newsTitle = in.readUTF();
+        this.newsContent = (Content) in.readObject();
+        this.newsAuthor = (Author) in.readObject();
+    }
 
 
     /* DOCS

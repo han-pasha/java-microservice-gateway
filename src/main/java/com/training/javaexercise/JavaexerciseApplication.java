@@ -1,5 +1,7 @@
 package com.training.javaexercise;
 
+import com.hazelcast.core.HazelcastInstance;
+import com.training.javaexercise.Config.ApplicationPropertiesConfiguration;
 import com.training.javaexercise.Model.Author;
 import com.training.javaexercise.Model.News;
 import com.training.javaexercise.Model.Role;
@@ -10,17 +12,20 @@ import com.training.javaexercise.Service.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboard;
-import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
-import org.springframework.cloud.netflix.zuul.filters.discovery.PatternServiceRouteMapper;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -28,12 +33,14 @@ import java.util.HashSet;
  * @author Han Pasha
  */
 @SpringBootApplication
-//@EnableEurekaClient
+@EnableEurekaClient
 @EnableCircuitBreaker
 @EnableHystrixDashboard
-@EnableZuulProxy
+//@EnableZuulProxy
 @EnableDiscoveryClient
+//@EnableFeignClients
 @EnableCaching
+@EnableConfigurationProperties({ApplicationPropertiesConfiguration.class})
 public class JavaexerciseApplication {
 
 	public static void main(String[] args) {
@@ -43,10 +50,11 @@ public class JavaexerciseApplication {
 	/**
 	 * this is needed for Zuul to be working and not making a goddamn loop.
 	 */
-	@Bean
-	public PatternServiceRouteMapper serviceRouteMapper() {
-		return new PatternServiceRouteMapper("(?<name>^.+)-(?<version>v.+$)", "${version}/${name}");
-	}
+//	@Bean
+//	public PatternServiceRouteMapper serviceRouteMapper() {
+//		return new PatternServiceRouteMapper("(?<name>^.+)-(?<version>v.+$)", "${version}/${name}");
+//	}
+
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -57,6 +65,11 @@ public class JavaexerciseApplication {
 	@LoadBalanced
 	public RestTemplate getRestTemplate() {
 		return new RestTemplate();
+	}
+
+	@Bean
+	public WebClient.Builder getWebClientBuilder() {
+		return WebClient.builder();
 	}
 
 	@Bean

@@ -5,6 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -14,7 +18,7 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "demo_author")
-public class Author {
+public class Author implements Externalizable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "AUTHOR_SEQUENCE")
@@ -36,4 +40,22 @@ public class Author {
             fetch = FetchType.EAGER
     )
     private Collection<Awards> authorAwards = new ArrayList<>();
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeLong(authorId);
+        out.writeUTF(authorName);
+        out.writeObject(authorNews);
+        out.writeObject(authorAwards);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        this.authorId = in.readLong();
+        this.authorName = in.readUTF();
+        this.authorNews = (Collection<News>) in.readObject();
+        this.authorAwards = (Collection<Awards>) in.readObject();
+    }
+
+
 }

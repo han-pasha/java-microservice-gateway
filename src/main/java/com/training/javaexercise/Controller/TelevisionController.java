@@ -1,21 +1,33 @@
 package com.training.javaexercise.Controller;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.training.javaexercise.Model.Broadcast;
+import com.training.javaexercise.Model.Channel;
 import com.training.javaexercise.Model.News;
 import com.training.javaexercise.Model.Television;
+import com.training.javaexercise.Service.Implementation.BroadcastInfoImpl;
+import com.training.javaexercise.Service.Implementation.ChannelInfoImpl;
 import com.training.javaexercise.Service.NewsService;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 @Controller
 @RequestMapping("/api/mvc/")
+@AllArgsConstructor
 public class TelevisionController {
 
     @Autowired
     private NewsService newsService;
+    @Autowired
+    private ChannelInfoImpl channelService;
+    @Autowired
+    private BroadcastInfoImpl broadcastService;
 
     @GetMapping("welcome")
     public String greetWelcome() {
@@ -62,4 +74,15 @@ public class TelevisionController {
     public ResponseEntity<News> updateNews(@RequestBody News news) {
         return ResponseEntity.ok().body(newsService.createNews(news));
     }
+
+    @GetMapping("channel/get")
+    public ResponseEntity<Channel> getChannel() {
+        return ResponseEntity.ok().body(channelService.getChannel());
+    }
+
+    @GetMapping("broadcast/get")
+    public ResponseEntity<Broadcast> getBroadcast() {
+        return ResponseEntity.ok().body(broadcastService.getBroadcast(1L));
+    }
+
 }

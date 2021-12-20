@@ -13,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Set;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -44,14 +43,12 @@ public class JpaPopulate_Test {
                 0L,
                 "USER",
                 "USER"
-//                new HashSet<>()
         ));
 
         this.roleRepository.save(new Role(
                 1L,
                 "ADMIN",
                 "ADMIN"
-//                new HashSet<>()
         ));
 
         Role role = roleRepository.findByRoleCode("USER");

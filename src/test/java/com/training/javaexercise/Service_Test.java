@@ -1,13 +1,18 @@
 package com.training.javaexercise;
 
 import com.training.javaexercise.Model.Author;
+import com.training.javaexercise.Model.Broadcast;
+import com.training.javaexercise.Model.Channel;
 import com.training.javaexercise.Model.News;
 import com.training.javaexercise.Repository.AuthorRepository;
 import com.training.javaexercise.Repository.NewsRepository;
 import com.training.javaexercise.Service.AuthorService;
 import com.training.javaexercise.Service.Implementation.AuthorServiceImpl;
+import com.training.javaexercise.Service.Implementation.BroadcastInfoImpl;
+import com.training.javaexercise.Service.Implementation.ChannelInfoImpl;
 import com.training.javaexercise.Service.Implementation.NewsServiceImp;
 import com.training.javaexercise.Service.NewsService;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
@@ -24,12 +29,17 @@ import java.util.ArrayList;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ContextConfiguration()
+@AllArgsConstructor
 public class Service_Test {
 
     @Autowired
     private NewsService newsService;
     @Autowired
     private AuthorService authorService;
+    @Autowired
+    private ChannelInfoImpl channelService;
+    @Autowired
+    private BroadcastInfoImpl broadcastService;
 
     @Mock
     private NewsRepository newsRepository;
@@ -66,4 +76,31 @@ public class Service_Test {
         Assertions.assertNotNull(author);
         Assertions.assertEquals(author.getAuthorName(),"Han");
     }
+
+    @Test
+    public void testGettingChannel_FromChannelClient() {
+        /*
+         * The problem right now is, even though the link is right,
+         * the service would always fail and used the fallback instead.
+         */
+        Mockito.when(channelService.getChannel())
+                .thenReturn(channelService.getFallbackChannel());
+        Channel channel = channelService.getChannel();
+        Assertions.assertNotNull(channel);
+        Assertions.assertNotEquals(channel.getChannelNumber(), 404);
+    }
+
+    @Test
+    public void testGettingBroadcast_FromBroadcastClient() {
+        /*
+         * The problem right now is, even though the link is right,
+         * the service would always fail and used the fallback instead.
+         */
+        Mockito.when(broadcastService.getBroadcast(1L))
+                .thenReturn(broadcastService.getFallbackBroadcast(1L));
+        Broadcast broadcast = broadcastService.getBroadcast(1L);
+        Assertions.assertNotNull(broadcast);
+        Assertions.assertNotEquals(broadcast.getBroadcastCode(), "404");
+    }
+
 }

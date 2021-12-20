@@ -27,14 +27,18 @@ import java.util.concurrent.ConcurrentMap;
 //@Builder
 public class NewsServiceImp implements NewsService {
 
-    HazelcastInstance hazelcastInstance = Hazelcast.newHazelcastInstance();
-    Map<String, News> televisions = hazelcastInstance.getMap("televisions");
+    @Autowired
     private final NewsRepository newsRepository;
     @Autowired
     private BroadcastInfoImpl broadcastInfo;
     @Autowired
     private ChannelInfoImpl channelInfo;
 
+    // CACHE
+    HazelcastInstance hazelcastInstance = Hazelcast.newHazelcastInstance();
+    Map<String, News> televisions = hazelcastInstance.getMap("televisions");
+
+    // CONSTANT
     private final Pageable tenNewsPerPage = PageRequest.of(0,10); //NAME COULD BE WRONG
 
     @Override
@@ -78,14 +82,4 @@ public class NewsServiceImp implements NewsService {
         News news = getNewsById(id);
         return new Television(news.getNewsTitle(),broadcast.getBroadcastCode(),channel.getName());
     }
-
-    // ALL FALLBACK METHOD WOULD BE UNDER THIS COMMENT
-//    public News getFallbackNews() {
-//        return new News(null, "Unknown News", null, null);
-//    }
-//
-//    public Television getFallbackTelevision(Long id) {
-//        return new Television("No News", "No Broadcast", "No Channel");
-//    }
-
 }

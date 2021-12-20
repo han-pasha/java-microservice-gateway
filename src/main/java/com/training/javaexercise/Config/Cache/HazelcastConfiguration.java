@@ -1,4 +1,4 @@
-package com.training.javaexercise.Cache;
+package com.training.javaexercise.Config.Cache;
 
 import com.hazelcast.config.*;
 import org.springframework.context.annotation.Bean;
