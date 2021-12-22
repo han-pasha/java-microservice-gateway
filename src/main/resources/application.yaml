@@ -5,10 +5,10 @@ spring:
   application:
     name: MainClient
 
-  mvc:
-    view:
-      prefix: /WEB-INF/views/
-      suffix: .jsp
+#  mvc:
+#    view:
+#      prefix: /WEB-INF/views/
+#      suffix: .jsp
 
   datasource:
     url: jdbc:h2:mem:testdb
@@ -21,11 +21,27 @@ spring:
     hibernate:
       ddl-auto: create
 
-#eureka:
-#  client:
-#    service-url:
-#      default-zone: http://localhost:8761/eureka/
-#    registry-fetch-interval-seconds: 5
+  main:
+    allow-bean-definition-overriding: true
+    web-application-type: servlet
+
+#  cloud:
+#    gateway:
+#      routes:
+#        - id : broadcast-client-service
+#          uri : http://broadcast-client-service
+#          predicates :
+#            - Path=/broadcast/
+#        - id : channel-client-service
+#          uri : http://channel-client-service
+#          predicates :
+#            - Path=/channel/
+
+eureka:
+  client:
+    service-url:
+      default-zone: http://localhost:8761/eureka/
+    registry-fetch-interval-seconds: 5
 
 ribbon:
   eureka:
@@ -54,14 +70,13 @@ ribbon:
 #      sensitive-headers: null
 #      service-id : broadcast-client-service
 ##      strip-prefix: false
-#      url: http://localhost:8083
 #
 #    channel-client-service:
 #      ribbon:
 #        listOfServers: localhost:8080
 #      path: /channel-client-service/**
 #      sensitive-headers: null
+#      service-id : channel-client-service
 ##      url : forward:/channel-client-service
 ##      strip-prefix: false
-#      url: http://localhost:8084
 

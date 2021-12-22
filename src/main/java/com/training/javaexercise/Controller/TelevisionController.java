@@ -3,14 +3,21 @@ package com.training.javaexercise.Controller;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.training.javaexercise.Model.Broadcast;
 import com.training.javaexercise.Model.Channel;
+import com.training.javaexercise.Model.JsonFormatter;
 import com.training.javaexercise.Model.News;
 import com.training.javaexercise.Model.Television;
+import com.training.javaexercise.Model.User;
+import com.training.javaexercise.Service.ChannelService;
+import com.training.javaexercise.Service.Implementation.AuthenticationServiceImpl;
 import com.training.javaexercise.Service.Implementation.BroadcastInfoImpl;
 import com.training.javaexercise.Service.Implementation.ChannelInfoImpl;
 import com.training.javaexercise.Service.NewsService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,14 +27,19 @@ import reactor.core.publisher.Mono;
 @Controller
 @RequestMapping("/api/mvc/")
 @AllArgsConstructor
+@Slf4j
 public class TelevisionController {
 
     @Autowired
     private NewsService newsService;
     @Autowired
-    private ChannelInfoImpl channelService;
+    private ChannelInfoImpl channelServiceRestTemplates;
     @Autowired
     private BroadcastInfoImpl broadcastService;
+    @Autowired
+    private final ChannelService channelServiceOpenFeign;
+    @Autowired
+    private final AuthenticationServiceImpl authenticationService;
 
     @GetMapping("welcome")
     public String greetWelcome() {
@@ -49,6 +61,18 @@ public class TelevisionController {
     @RequestMapping(value = "login", method = RequestMethod.GET)
     public String login(Model model) {
         return "/user/login";
+    }
+
+    @PostMapping("testing/login-with-service")
+    public ResponseEntity<JsonFormatter> loginToService(@RequestBody JsonFormatter user) {
+        log.info("This method called because of login");
+        if (user == null) {
+            return null;
+        }
+        String username = user.getToken();
+        String password = user.getRefrestToken();
+//        return authenticationService.userLogin(username, password);
+        return ResponseEntity.ok().body(new JsonFormatter("Yow", "Error mulu anjing"));
     }
 
     @GetMapping(value = "param/welcome/{name}", params = "user")
@@ -75,11 +99,43 @@ public class TelevisionController {
         return ResponseEntity.ok().body(newsService.createNews(news));
     }
 
+    /**
+     ** THIS IS FROM MICROSERVICE
+     * @return dont know bro
+     */
     @GetMapping("channel/get")
     public ResponseEntity<Channel> getChannel() {
-        return ResponseEntity.ok().body(channelService.getChannel());
+        return ResponseEntity.ok().body(channelServiceRestTemplates.getChannel());
     }
 
+    @PostMapping("channel/post")
+    public ResponseEntity<Channel> postChannel(@RequestBody Channel channel) {
+        return ResponseEntity.ok().body(channelServiceRestTemplates.getChannel());
+    }
+
+    @PutMapping("channel/post")
+    public ResponseEntity<Channel> updateChannel(@RequestBody Channel channel) {
+        return ResponseEntity.ok().body(channelServiceRestTemplates.getChannel());
+    }
+
+    @DeleteMapping("channel/delete/{channelName}")
+    public ResponseEntity<Channel> deleteChannel(@PathVariable String channelName) {
+        return ResponseEntity.ok().body(channelServiceRestTemplates.getChannel());
+    }
+
+    @GetMapping("channel/get-reactive")
+    public ResponseEntity<Mono<Channel>> getChannelReactive() {
+        return ResponseEntity.ok().body(channelServiceRestTemplates.getChannelByIdReactive());
+    }
+
+    @GetMapping("channel-feign/get")
+    public ResponseEntity<Channel> getChannelFeign() {
+        return ResponseEntity.ok().body(channelServiceOpenFeign.getChannel());
+    }
+
+    /**
+     * BROADCAST
+     */
     @GetMapping("broadcast/get")
     public ResponseEntity<Broadcast> getBroadcast() {
         return ResponseEntity.ok().body(broadcastService.getBroadcast(1L));

@@ -1,6 +1,5 @@
 package com.training.javaexercise;
 
-import com.hazelcast.core.HazelcastInstance;
 import com.training.javaexercise.Config.ApplicationPropertiesConfiguration;
 import com.training.javaexercise.Model.Author;
 import com.training.javaexercise.Model.News;
@@ -36,9 +35,8 @@ import java.util.HashSet;
 @EnableEurekaClient
 @EnableCircuitBreaker
 @EnableHystrixDashboard
-//@EnableZuulProxy
 @EnableDiscoveryClient
-//@EnableFeignClients
+@EnableFeignClients
 @EnableCaching
 @EnableConfigurationProperties({ApplicationPropertiesConfiguration.class})
 public class JavaexerciseApplication {

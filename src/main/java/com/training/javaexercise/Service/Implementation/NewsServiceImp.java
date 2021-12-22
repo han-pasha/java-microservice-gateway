@@ -1,5 +1,6 @@
 package com.training.javaexercise.Service.Implementation;
 
+import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.training.javaexercise.Model.Broadcast;
@@ -33,8 +34,14 @@ public class NewsServiceImp implements NewsService {
     private BroadcastInfoImpl broadcastInfo;
     @Autowired
     private ChannelInfoImpl channelInfo;
+    Config config = new Config();
+
 
     // CACHE
+//    public void initCache() {
+//        config.getUserCodeDeploymentConfig().setEnabled(true);
+//        config.setClusterName("dev");
+//    }
     HazelcastInstance hazelcastInstance = Hazelcast.newHazelcastInstance();
     Map<String, News> televisions = hazelcastInstance.getMap("televisions");
 
@@ -77,9 +84,10 @@ public class NewsServiceImp implements NewsService {
     // ALREADY CHANGED ==================================================================!>
     @Override
     public Television getTvInfo(Long id) {
-        Broadcast broadcast = broadcastInfo.getBroadcast(id);
-        Channel channel = channelInfo.getChannel();
+//        Broadcast broadcast = broadcastInfo.getBroadcast(id);
+//        Channel channel = channelInfo.getChannel();
         News news = getNewsById(id);
-        return new Television(news.getNewsTitle(),broadcast.getBroadcastCode(),channel.getName());
+//        return new Television(news.getNewsTitle(),broadcast.getBroadcastCode(),channel.getName());
+        return null;
     }
 }
