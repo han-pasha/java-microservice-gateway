@@ -20,3 +20,22 @@ spring.jpa.show-sql=true
 # create: creates the schema, destroying previous data.
 # create-drop: drop the schema when the SessionFactory is closed explicitly, typically when the application is stopped.
 spring.jpa.hibernate.ddl-auto= create
+
+spring.application.name=MainClient
+server.port=8080
+#info.app.name=Employee Manager Application
+#info.app.description=This is application to manage employee
+#info.app.version=1.0
+#management.endpoint.health.show-details=always
+#management.endpoints.web.exposure.include=hystrix.stream
+
+ribbon.eureka.enabled=false
+zuul.routes.javaexercise.path = /MainClient/**
+zuul.routes.javaexercise.url = http://localhost:8080/api/mvc
+
+zuul.routes.first.path = /BroadcastClient/**
+zuul.routes.first.url = http://localhost:8083
+
+zuul.routes.second.path = /ChannelClient/**
+zuul.routes.second.url = http://localhost:8084
+

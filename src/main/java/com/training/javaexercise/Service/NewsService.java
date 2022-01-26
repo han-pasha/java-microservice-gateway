@@ -1,15 +1,17 @@
 package com.training.javaexercise.Service;
 
 import com.training.javaexercise.Model.News;
-import org.springframework.transaction.annotation.Transactional;
+import com.training.javaexercise.Model.Television;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
-@Transactional
 public interface NewsService {
 
-    List<News> getAllNews();
-    List<News> getAllNewsByTitle(String title);
-    News inserNews(News news);
-    News findNews(Long id);
+    List<News> getAllNews(Pageable pageable);
+    News createNews(News news);
+    News getNewsById(Long id);
+    News getNewsByTitle(String newsTitle);
+    Television getTvInfo(Long id);
+
 
 }
