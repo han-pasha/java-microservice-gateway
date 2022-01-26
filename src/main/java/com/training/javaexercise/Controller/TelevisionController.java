@@ -1,23 +1,18 @@
 package com.training.javaexercise.Controller;
 
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.training.javaexercise.Model.Broadcast;
 import com.training.javaexercise.Model.Channel;
 import com.training.javaexercise.Model.JsonFormatter;
 import com.training.javaexercise.Model.News;
 import com.training.javaexercise.Model.Television;
-import com.training.javaexercise.Model.User;
 import com.training.javaexercise.Service.ChannelService;
-import com.training.javaexercise.Service.Implementation.AuthenticationServiceImpl;
 import com.training.javaexercise.Service.Implementation.BroadcastInfoImpl;
 import com.training.javaexercise.Service.Implementation.ChannelInfoImpl;
 import com.training.javaexercise.Service.NewsService;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,8 +33,6 @@ public class TelevisionController {
     private BroadcastInfoImpl broadcastService;
     @Autowired
     private final ChannelService channelServiceOpenFeign;
-    @Autowired
-    private final AuthenticationServiceImpl authenticationService;
 
     @GetMapping("welcome")
     public String greetWelcome() {
@@ -99,28 +92,28 @@ public class TelevisionController {
         return ResponseEntity.ok().body(newsService.createNews(news));
     }
 
-    /**
-     ** THIS IS FROM MICROSERVICE
+    /*
+     * THIS IS FROM MICROSERVICE
      * @return dont know bro
      */
     @GetMapping("channel/get")
     public ResponseEntity<Channel> getChannel() {
-        return ResponseEntity.ok().body(channelServiceRestTemplates.getChannel());
+        return channelServiceRestTemplates.getChannel();
     }
 
     @PostMapping("channel/post")
     public ResponseEntity<Channel> postChannel(@RequestBody Channel channel) {
-        return ResponseEntity.ok().body(channelServiceRestTemplates.getChannel());
+        return channelServiceRestTemplates.postChannel(channel);
     }
 
     @PutMapping("channel/post")
     public ResponseEntity<Channel> updateChannel(@RequestBody Channel channel) {
-        return ResponseEntity.ok().body(channelServiceRestTemplates.getChannel());
+        return channelServiceRestTemplates.getChannel();
     }
 
     @DeleteMapping("channel/delete/{channelName}")
     public ResponseEntity<Channel> deleteChannel(@PathVariable String channelName) {
-        return ResponseEntity.ok().body(channelServiceRestTemplates.getChannel());
+        return channelServiceRestTemplates.getChannel();
     }
 
     @GetMapping("channel/get-reactive")
@@ -133,7 +126,7 @@ public class TelevisionController {
         return ResponseEntity.ok().body(channelServiceOpenFeign.getChannel());
     }
 
-    /**
+    /*
      * BROADCAST
      */
     @GetMapping("broadcast/get")

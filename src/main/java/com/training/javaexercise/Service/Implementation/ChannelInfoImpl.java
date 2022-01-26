@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -27,9 +28,9 @@ public class ChannelInfoImpl {
     private final String API_URL = "http://channel-client-service/api/channel/";
     private final Logger LOGGER = LoggerFactory.getLogger(ChannelInfoImpl.class);
 
-    /**
+    /*
      * NORMAL
-     * !REST TEMPLATE WOULD BE DEPRECATED IN THE FUTURE
+     ! REST TEMPLATE WOULD BE DEPRECATED IN THE FUTURE
      */
     @HystrixCommand(
             fallbackMethod = "getFallbackChannel",
@@ -39,20 +40,22 @@ public class ChannelInfoImpl {
                     @HystrixProperty(name = "maxQueueSize", value = "10")   // MAX QUEUE BEFORE BUCKET IS OPEN
             }
     )
-    public Channel getChannel() {
-        return restTemplate.getForObject(API_URL + "hello", Channel.class);
+    public ResponseEntity<Channel> getChannel() {
+        Channel dummyChannel = restTemplate.getForObject(API_URL + "hello", Channel.class);
+        if (dummyChannel == null) {return ResponseEntity.status(HttpStatus.NOT_FOUND).body(dummyChannel);}
+        return ResponseEntity.ok().body(dummyChannel);
     }
 
     public Channel getFallbackChannel() {
         return new Channel(0L, "Unknown Channel", 404);
     }
 
-    public Channel postChannel(Channel channel) {
-        return restTemplate.postForObject(API_URL + "post", channel, Channel.class);
+    public ResponseEntity<Channel> postChannel(Channel channel) {
+        return ResponseEntity.ok(restTemplate.postForObject(API_URL + "post", channel, Channel.class));
     }
 
-    public Channel updateChannel(Channel channel) {
-        return restTemplate.patchForObject(API_URL + "update", channel, Channel.class);
+    public ResponseEntity<Channel> updateChannel(Channel channel) {
+        return ResponseEntity.ok(restTemplate.patchForObject(API_URL + "update", channel, Channel.class));
     }
 
     public void deleteChannel(String name) {
